@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hr.mapper">
+<select id="list" resultType="employee.EmployeeVO">
+	select e.*,(select department_name from departments where department_id = e.department_id) department_name
+	,(select job_title from jobs where job_id = e.job_id) job_title
+	from employees e
+</select>
+	<select id="department" resultType="employee.DepartmentVO">
+	select distinct department_id,
+					nvl(
+          (select department_name from departments
+                where department_id=e.department_id) , '기타') department_name
+          
+	from employees e
+  order by department_id
+</select>
+
+<select id="depts" resultType="employee.EmployeeVO">
+	select e.*,(select department_name from departments where department_id = e.department_id) department_name
+	,(select job_title from jobs where job_id = e.job_id) job_title
+	from employees e
+	<if test='depts==0'>where e.department_id is null</if>
+	<if test='depts>0'>where e.department_id = #{depts}</if>
+</select>
+<select id="detail" resultType="employee.EmployeeVO">
+
+select e.*, last_name ||' ' || first_name , department_name , job_title
+from employees e , departments d, jobs j 
+where employee_id = #{id}
+and e.department_id = d.department_id(+)
+and e.job_id = j.job_id
+</select>
+
+
+
+</mapper>

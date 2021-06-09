@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!--data/db.properties 접속 정보를 넣어놓고 불러옴 -->
+	<context:property-placeholder
+		location="classpath:data/db.properties" />
+
+
+	<!-- DBCP객체 -->
+	<bean id="dbcp" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+	</bean>
+
+
+	<!--Mybatis 설정할때 ref부분에 dbcp이 들어가야됨 value에 mapper의 경로가 들어가면됨. -->
+	<!-- Mybatis객체 -->
+	<bean id="factory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dbcp" />
+		<property name="mapperLocations"
+			value="classpath:sqlmap/*-mapper.xml" />
+	</bean>
+
+
+	<!-- 쿼리문실행객체 -->
+	<!--ref에 Mybatis객체가 들어가면됨 구분은 id로 한다. -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory"
+			ref="factory" />
+		<qualifier value="hanul" />
+	</bean>
+
+
+
+	<!-- DBCP객체 -->
+	<bean id="dbcp_hr" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${hr.username}" />
+		<property name="password" value="${hr.password}" />
+	</bean>
+
+
+	<!--Mybatis 설정할때 ref부분에 dbcp이 들어가야됨 value에 mapper의 경로가 들어가면됨. -->
+	<!-- Mybatis객체 -->
+	<bean id="factory_hr"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dbcp_hr" />
+		<property name="mapperLocations"
+			value="classpath:sqlmap/*-mapper.xml" />
+	</bean>
+
+
+	<!-- 쿼리문실행객체 -->
+	<!--ref에 Mybatis객체가 들어가면됨 구분은 id로 한다. -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory"
+			ref="factory_hr" />
+		<qualifier value="hr" />
+	</bean>
+
+
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+			<property name="defaultEncoding" value="UTF-8"></property>
+		</bean>
+	
+</beans>

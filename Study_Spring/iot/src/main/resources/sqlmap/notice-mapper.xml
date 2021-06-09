@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notice.mapper">
+	<update id="update">
+		update notice set title = #{title} , content = #{content}
+			,	filename = #{filename , jdbcType=VARCHAR}
+			,	filepath = #{filepath , jdbcType=VARCHAR}
+			where id =#{id}
+	</update>
+	<insert id="reply_insert">
+	
+	
+		insert into notice (id , root , title , content , writer , filename , filepath , step , indent)
+		values ( seq_notice.nextval , #{root} , #{title} , #{content} , #{writer} 
+				, #{filename , jdbcType=VARCHAR}
+				, #{filepath , jdbcType=VARCHAR}
+				, #{step} + 1 , #{indent} + 1
+				
+		)
+	
+	</insert>
+	<update id="readcnt">
+		update notice set readcnt = readcnt+1 where id = #{id}
+	</update>
+	<!--처음 화면 연결용 테스트 <select id="list" resultType="notice.NoticeVO"> select 
+		rownum no , n.* , (select name from member m where m.id = n.writer) name 
+		from (select * from notice order by id) n order by no desc </select> -->
+	<select id="list" resultType="notice.NoticeVO">
+		select * from
+		(select rownum no , n.* , (select name from member m where m.id = n.writer)
+		name
+		from (select * from notice <include refid="search_where"/> order by root , step desc) n
+		order by no desc )
+		where no between #{beginList} and #{endList}
+		<!--나중에 seach와 keyword통해서 검색결과 작업 해야함 -->
+	</select>
+	<select id="totalList" resultType="integer">
+		select count(*) from notice <include refid="search_where"/>
+		<!--나중에 seach와 keyword통해서 검색결과 작업 해야함 -->
+	</select>
+	<select id="view" resultType="notice.NoticeVO">
+		select notice.* , (select name from member m 
+		where m.id = notice.writer) name
+		from notice notice
+		where notice.id = #{id}
+	</select>
+	<insert id="insert">
+		insert into notice (id , root , title , content , writer , filename , filepath)
+		values ( seq_notice.nextval , seq_notice.currval , #{title} , #{content} , #{writer} 
+				, #{filename , jdbcType=VARCHAR}
+				, #{filepath , jdbcType=VARCHAR}
+				
+		)
+	</insert>
+	
+	<delete id="delete">
+		delete from notice where id = #{id}
+	</delete>
+	
+	<sql id="search_where">
+		<if test="  search=='title'   or search=='content'  or search=='writer' ">
+			where ${search} like '%'|| #{keyword} || '%'
+		</if>
+		<if test=" search=='all'   ">
+			where title like  '%'|| #{keyword} || '%'
+				or content like  '%'|| #{keyword} || '%'
+				or writer like  '%'|| #{keyword} || '%'
+		<!-- 		or writer like  (select id from member where name like  '%'|| #{keyword} || '%'
+				 -->
+
+		</if>
+	</sql>
+	
+
+</mapper>

@@ -1,0 +1,190 @@
+
+
+		select * from
+		(select rownum no , n.* , (select name from member m where m.id = n.writer)
+		name
+		from (select * from notice where title like '%'||'te'|| '%' order by id ) n
+		order by no desc )
+		where no between 1 and 10;
+    --notice에 있는 내용을 keyword를 이용하여 검색하는 쿼리
+    
+    
+    --notice에 있는 내용을 update할때 사용함
+    update notice 
+    set title =  title ||'abcd' 
+    where id = 10;
+    
+    commit;
+
+
+
+
+
+
+
+create table notice(
+id number CONSTRAINT notice_id primary key, -- 글번호
+title varchar(200) not null,  -- 글제목
+content varchar2(4000) not null,  -- 글내용
+writer varchar2(50) not null,  -- 글쓴이
+writedate date default sysdate,  -- 작성일자
+readcnt number default 0,  -- 조회수
+filename varchar2(300),  -- 파일 첨부시 파일명
+filepath varchar2(300), --파일 첨부시 파일경로
+root number, --답글처리용 
+step number default 0, --답글처리용 
+indent number default 0, --답글처리용 
+constraint notice_write_fk foreign key (writer) references member(id) --member테이블에 있는 id만 사용할수있는 포링키(참조)
+);
+
+create sequence seq_notice
+start with 1 INCREMENT by 1;
+--시퀀스 자동증가 
+
+insert into notice(id,title,content,writer)
+values (seq_notice.nextval , '공지글test' , '공지글 테스트중입니다.' , 'admin');
+
+commit;
+select count(*) from notice;
+
+
+
+
+create table member(
+name varchar2(20) not null,
+id varchar2(20) primary key,
+pw varchar2(20) ,
+addr varchar2(50),
+tel varchar2(20),
+gender varchar2(3) default '남' not null,
+birth date,
+post varchar2(7),
+admin varchar2(1) default 'N' not null,
+email varchar2(100) ,
+naver varchar2(100) ,
+kakao varchar2(100) 
+);
+insert into member values('kym' , 'admin' , 'admin' , '' , '' , '남' , sysdate , '','Y','','','');
+commit;
+select * 
+from member;
+
+
+방명록 관리
+create table board(
+	id           number constraint board_id_pk primary key,
+	writer       varchar2(50) not null,
+	title        varchar2(300) not null,
+	content      varchar2(4000) not null,
+	writedate    date default sysdate,
+	readcnt      number default 0,
+	filename     varchar2(300),
+	filepath     varchar2(300),
+	constraint board_writer_fk foreign key(writer) 
+									references member(id) 
+);
+
+create sequence seq_board start with 1 increment by 1;
+
+create or replace trigger trg_board 
+	before insert on board
+	for each row
+begin
+	select seq_board.nextval into :new.id  from dual;
+end;
+/
+
+
+방명록 댓글 관리
+create table board_comment(
+	id         number constraint board_comment_id_pk primary key,
+	writer     varchar2(50), /* 작성자의 아이디 */
+	content    varchar2(4000), /* 댓글 내용 */
+	writedate  date default sysdate,
+	pid        number /* 방명록 글의 pk인 id */,
+	constraint board_comment_writer_fk foreign key(writer) 
+						references member(id) on delete cascade,
+	constraint board_comment_pid_fk foreign key(pid) 
+						references board(id) /* on delete set null */ on delete cascade
+);
+
+/*
+트리거에 반영한 시퀀스를 잘못 적용한 경우 사용함
+update board_comment set id = id - 520;
+drop sequence seq_board_comment;
+*/
+create sequence seq_board_comment start with 4 increment by 1;
+
+create or replace trigger trg_board_comment
+	before insert on board_comment
+	for each row 
+begin
+	select seq_board_comment.nextval into :new.id from dual;
+end;
+/
+
+
+사번, 성명, 부서코드, 부서명 조회
+select employee_id, last_name || ' '|| first_name name
+		, e.department_id, department_name
+from employees e, departments d
+where e.department_id = d.department_id(+);
+
+select employee_id, last_name || ' '|| first_name name
+		, department_id, ( select department_name from departments 
+		                   where e.department_id = department_id) department_name 
+from employees e;
+
+select employee_id, last_name || ' '|| first_name name
+		, department_id, fn_dept_name(department_id) department_name 
+from employees;
+
+int no;
+
+String fn_dept_name(){
+   return "";
+}
+procedure, function
+
+create or replace function 
+	fn_dept_name(dept_id departments.department_id%TYPE)
+return varchar2 is
+   dept_name varchar2(50);
+begin
+	select department_name into dept_name from departments
+	where department_id =  dept_id;
+	return dept_name;
+end;
+/
+ 
+
+select fn_dept_name(10) from dual;
+
+		
+update employees set salary = salary*1.1 ;		
+
+create or replace procedure pro_salary( pct number )
+is 
+begin
+	update employees set salary = salary + salary*pct*0.01 ;
+end;
+/
+
+
+select employee_id, salary from employees where department_id = 60;
+
+
+execute pro_salary(10);
+
+
+
+
+
+
+
+
+
+
+
+
+

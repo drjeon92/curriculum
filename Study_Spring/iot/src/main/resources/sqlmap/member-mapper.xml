@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member.mapper">
+<insert id="join" >
+insert into member(name , id, pw , gender , birth , tel ,addr , post , email)
+values(#{name} , #{id} , #{pw} , #{gender}, #{birth} ,#{tel}, #{addr},#{post},#{email})
+
+</insert>
+<select id="login" resultType="member.MemberVO">
+	select * from member where id=#{id} and pw=#{pw}
+</select>
+<select id="id_check" resultType="integer">
+	select count(*) from member where id=#{id}
+</select>
+
+<select id="social_id" resultType="integer">
+	select count(*) from member where ${social_type} = #{social_email}
+</select>
+<insert id="social_insert">
+	insert into member (name, id, gender, ${social_type})
+	values (#{name}, #{id}, #{gender}, #{social_email})
+</insert>
+<update id="social_update">
+	update member set name=#{name}, gender=#{gender}
+	where ${social_type} = #{social_email}
+</update>
+
+</mapper>
+
+
+
