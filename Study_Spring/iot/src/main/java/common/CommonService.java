@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.MultiPartEmail;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -38,7 +39,14 @@ public class CommonService {
 		json = json.getJSONObject("body");
 		int count = 0;
 		if( json.has("totalCount") ) count = json.getInt("totalCount");
-		json = json.getJSONObject("items");
+		//items: ""
+		//items: { "item":[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}] }
+		if( json.get("items") instanceof JSONObject ) {
+			json = json.getJSONObject("items");
+			if( count==1 ) json.put("item", new JSONArray().put(0, json.get("item"))  ); 
+		}else
+			json.put("item", "");
+		
 		json.put("count", count);
 		return json.toMap();
 	}

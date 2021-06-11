@@ -129,17 +129,19 @@ ul { list-style:none; padding:0; }
 
  
 
-ul.grid {  width:100%; /* margin:0 10%  */ }
-.grid li { float:left; width:19%; height:150px; 
+ul.grid {  width:80%;  margin:0 10%; display:inline-block;  }
+.grid li { float:left; width:19%; height:150px; margin:20px 1.25% 0 0;
 		border:1px solid #b0b0b0; box-sizing:border-box; }
 .grid li div { text-align:left; padding:9px 10px; }
-.grid li:not(:nth-child(5n)) { margin:0 1.25% 20px 0 }
+/* .grid li:not(:nth-child(5n)) { margin:0 1.25% 20px 0 } */
+.grid li:nth-child(5n) { margin-right:0  }
 .grid li div:nth-child(1) { height:65px; 
 	overflow:hidden;   display:-webkit-box;
 	-webkit-line-clamp: 3;  -webkit-box-orient:vertical;
 	word-wrap:break-word;
 }
 .grid li div:nth-child(2) { padding:0 10px }
+.grid li.first-row { margin-top:0  } /* 첫번째 줄 li 들에 대해 위쪽여백 없애기 */
 
 .tb_wrap { overflow-y:auto; width:80%; margin: 0 9.97%;  } 
 .tb_wrap table { width:100%; }
