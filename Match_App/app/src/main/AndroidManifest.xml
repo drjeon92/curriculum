@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.match_app" >
+
+    <!-- 권한 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 맵 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 진동 권한 -->
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="true" /> <!-- 안드로이드에 카메라가 꼭 있어야 한다 -->
+    <queries>
+
+        <!-- WebView -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data android:scheme="http" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data android:scheme="https" />
+        </intent>
+
+        <!-- Camera -->
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+
+        <!-- Gallery -->
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT" />
+        </intent>
+
+        <!-- Youtube -->
+        <intent>
+            <action android:name="android.media.browse.MediaBrowserService" />
+        </intent>
+
+        <!-- Chat -->
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <!-- If you don't know the MIME type in advance, set "mimeType" to "*/*". -->
+            <data android:mimeType="application/pdf" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <!-- Replace with the MIME type that your app works with, if needed. -->
+            <data android:mimeType="image/jpeg" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+
+            <data android:mimeType="text/plain" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+
+        <!-- Place inside the <queries> element. -->
+        <intent>
+            <action android:name="android.accounts.AccountAuthenticator" />
+        </intent>
+        <!-- Allows the app to load an icon corresponding to the custom MIME type. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+
+            <data
+                android:host="com.android.contacts"
+                android:mimeType="vnd.android.cursor.item/*"
+                android:scheme="content" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_logo"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_logo_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.match_app"
+        android:usesCleartextTraffic="true" >
+        <receiver android:name=".Common.SmsBroadcast">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+        <activity
+            android:name=".etc.QAActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
+            android:name=".etc.PublicPostActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity android:name=".etc.Btn07_2_authDelete" />
+        <activity android:name=".etc.Btn07_1_Email" />
+        <activity android:name=".etc.Btn00" />
+        <activity android:name=".etc.Btn01" />
+        <activity android:name=".etc.Btn02" />
+        <activity android:name=".etc.Btn03" />
+        <activity android:name=".etc.Btn04" />
+        <activity android:name=".etc.Btn05" />
+        <activity android:name=".etc.Btn06" />
+        <activity android:name=".etc.Btn07" />
+        <activity android:name=".etc.GpsListActivity" />
+        <activity android:name=".etc.FavoriteListActivity" />
+        <activity android:name=".etc.MatchListActivity" />
+        <activity android:name=".etc.EtcProfileActivity" />
+        <activity android:name=".post.PostUpdateActivity" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDX5ZInNPI2acRkjhvlSApMI50BvN6zPSM" />
+
+        <activity android:name=".post.PostDateActivity" />
+        <activity android:name=".login.Login03Activity" />
+        <activity android:name=".login.Login04Activity" />
+        <activity android:name=".login.Login00Activity" />
+        <activity android:name=".post.PostMapActivity" />
+        <activity android:name=".MainActivity" /> <!-- 여기에 파일명 입력하면 제일먼저실행됨 -->
+        <activity android:name=".IntroActivity" > <!-- 여기에 파일명 입력하면 제일먼저실행됨 -->
+            <intent-filter android:autoVerify="true" >
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="example.com/link"
+                    android:scheme="http" />
+                <data
+                    android:host="example.com/link"
+                    android:scheme="https" />
+                <data
+                    android:host="example.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity> <!-- 구글맵 api key -->
+        <!--
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDB0XrgoJjwtib4j9XQbRnY_3rw1U7bpNY" /> &lt;!&ndash; http로 들어와도 통신 가능하도록 설정 &ndash;&gt;
+        -->
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="eea6cbe263225c8d7cdb10f46fc6d119" />
+        <!--
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBRdHiOG2-fqy-YQkHkvzDK1tlQ9aLZd_g"/>
+        -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".ChattingActivity" />
+        <activity android:name=".post.PostDetailActivity" />
+        <activity android:name=".post.PostWriteActivity" />
+        <activity android:name=".JoinActivity" />
+        <activity android:name=".login.Login02Activity" /> <!-- API24 이상부터 Url 이 file:// 로 시작되면 안되서 content:// 으로 변환시키는 부분 -->
+        <activity android:name=".login.Login01Activity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+        <service
+            android:name=".Common.FirebaseMessagingService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service> <!-- - 안드로이드 8.0 이상 푸시 처리 추가 코드 -->
+        <!--
+<meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_push"/>
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
+        <service
+            android:name=".Common.MyService"
+            android:enabled="true"
+            android:exported="true" />
+    </application>
+
+</manifest>
